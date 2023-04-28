@@ -12,25 +12,32 @@ const firebaseConfig = {
     appId: "1:157151329839:web:37069a789b30043e78d0da",
     measurementId: "G-4969K02984"
 };
+import { initializeApp } from "firebase/app";
+import { getMessaging } from "firebase/messaging";
 
+
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const messaging = getMessaging(app);
+
+
+// Initialize Firebase Cloud Messaging and get a reference to the service
+const messaging = getMessaging();
+
+const token = getToken(getToken(messaging, {
+    vapidKey: import.meta.env.APP_VAPID_KEY,
+}))
 
 async function requestPermission() {
     console.log("권한 요청 중...");
 
-    const permission = await Notification.requestPermission();
-    if (permission === "denied") {
-        console.log("알림 권한 허용 안됨");
-        return;
+    function requestPermission() {
+        console.log('Requesting permission...');
+        Notification.requestPermission().then((permission) => {
+          if (permission === 'granted') {
+            console.log('Notification permission granted.');
+          }
+        })
     }
-
-    console.log("알림 권한이 허용됨");
-
-    // Initialize Firebase
-    const token = await getToken(messaging, {
-        vapidKey: import.meta.env.APP_VAPID_KEY,
-    })
 
     if (token) console.log("token: ", token);
     else console.log("Can not get Token");
