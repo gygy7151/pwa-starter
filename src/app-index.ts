@@ -40,3 +40,4 @@ export class AppIndex extends LitElement {
     return router.render();
   }
 }
+
